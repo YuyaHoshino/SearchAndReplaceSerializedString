@@ -12,6 +12,10 @@ if ( $sql && $search_word && $replace_word ) {
 	// とりあえず全部置換
 	$sql_new = str_replace ( $search_word, $replace_word, $sql_new );
 	
+	// 置換数
+	$log .= '<div class="log--count"><strong>置換総数：</strong>' . number_format ( substr_count ( $sql, $search_word ) ) . '</div>';
+	$log .= '<div class="log--count"><strong>内シリアライズ：</strong>';
+	
 	// 文字列の長さを比較
 	//$add_length = strlen ( $replace_word ) - strlen ( $search_word );
 	
@@ -25,6 +29,7 @@ if ( $sql && $search_word && $replace_word ) {
 		array_shift ( $serialize_val_arr );
 		
 		$i = 0;
+		$_log = '';
 		foreach ( $serialize_val_arr as $row ) {
 			if ( preg_match ( '@^((\\\)?")(.+?)((\\\)?";)@', $row, $result1 ) ) {
 				// シリアライズ文字列の値部分を抽出
@@ -51,11 +56,12 @@ if ( $sql && $search_word && $replace_word ) {
 					
 					// ログ
 					$count++;
-					$log .= '#' . $count . " " . $serialize_replace . "<br />\n";
+					$_log .= '<li><strong>#' . $count . "</strong> " . $serialize_replace . '</li>';
 				}
 			}
 			$i++;
 		}
+		$log .= number_format ( $count ) . '</div><ul class="log--items">' . $_log . '</ul>';
 	}
 }
 
