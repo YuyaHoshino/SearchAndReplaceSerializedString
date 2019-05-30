@@ -151,6 +151,11 @@ input[type="file"] {
 .log--items li:nth-child(2n) {
 	background: #FFFFFF;
 }
+.log--items li span {
+	background: #FFF59F;
+	display: inline-block;
+	position: relative;
+}
 .loading {
 	background: url(loading.svg) 50% 50% no-repeat;
 	display: none;

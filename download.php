@@ -56,7 +56,7 @@ if ( $sql && $search_word && $replace_word ) {
 					
 					// ログ
 					$count++;
-					$_log .= '<li><strong>#' . $count . "</strong> " . $serialize_replace . '</li>';
+					$_log .= '<li><strong>#' . $count . "</strong> " . str_replace ( $replace_word, '<span>' . $replace_word . '</span>', $serialize_replace ) . '</li>';
 				}
 			}
 			$i++;
