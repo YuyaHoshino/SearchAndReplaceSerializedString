@@ -13,8 +13,8 @@ if ( $sql && $search_word && $replace_word ) {
 	$sql_new = str_replace ( $search_word, $replace_word, $sql_new );
 	
 	// 置換数
-	$log .= '<div class="log--count"><strong>置換総数：</strong>' . number_format ( substr_count ( $sql, $search_word ) ) . '</div>';
-	$log .= '<div class="log--count"><strong>内シリアライズ：</strong>';
+	$log .= '<div class="log--all-count"><strong>置換総数：</strong>' . number_format ( substr_count ( $sql, $search_word ) ) . '</div>';
+	$log .= '<div class="log--serial-count"><strong>シリアライズ：</strong>';
 	
 	// 文字列の長さを比較
 	//$add_length = strlen ( $replace_word ) - strlen ( $search_word );

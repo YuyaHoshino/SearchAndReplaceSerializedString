@@ -136,13 +136,17 @@ input[type="file"] {
 	font-weight: bold;
 	padding: 10px 20px;
 }
-.log--count {
+.log--all-count {
 	border-bottom: 1px solid #F5F5F5;
 	padding: 5px 20px 5px 30px;
 }
+.log--serial-count {
+	border-bottom: 1px solid #F5F5F5;
+	padding: 5px 20px 5px 40px;
+}
 .log--items li {
 	background: #F5F5F5;
-	padding: 2px 20px 2px 40px;
+	padding: 2px 20px 2px 50px;
 }
 .log--items li:nth-child(2n) {
 	background: #FFFFFF;
