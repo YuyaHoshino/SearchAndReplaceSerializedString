@@ -1,31 +1,31 @@
 <?php
-$sql = !empty ( $_FILES['sql']['tmp_name'] ) ? file_get_contents ( $_FILES['sql']['tmp_name'] ) : '';
+$sql_org = !empty ( $_FILES['sql']['tmp_name'] ) ? file_get_contents ( $_FILES['sql']['tmp_name'] ) : '';
 $search_word = filter_input ( INPUT_POST, 'search_word', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 $replace_word = filter_input ( INPUT_POST, 'replace_word', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 $count = 0;
 $log = '';
 $sql_new = '';
 
-if ( $sql && $search_word && $replace_word ) {
-	$sql_new = $sql;
+if ( $sql_org && $search_word && $replace_word ) {
+	$sql_new = $sql_org;
 	
 	// とりあえず全部置換
 	$sql_new = str_replace ( $search_word, $replace_word, $sql_new );
 	
 	// 置換数
-	$log .= '<div class="log--all-count"><strong>置換総数：</strong>' . number_format ( substr_count ( $sql, $search_word ) ) . '</div>';
+	$log .= '<div class="log--all-count"><strong>置換総数：</strong>' . number_format ( substr_count ( $sql_org, $search_word ) ) . '</div>';
 	$log .= '<div class="log--serial-count"><strong>シリアライズ：</strong>';
 	
 	// 文字列の長さを比較
 	//$add_length = strlen ( $replace_word ) - strlen ( $search_word );
 	
 	// シリアライズされた文字列を検索
-	if ( preg_match_all ( '@s:([0-9]+):@', $sql, $count_arr ) ) {
+	if ( preg_match_all ( '@s:([0-9]+):@', $sql_org, $count_arr ) ) {
 		// カウント数だけ先に取得しておく
 		$count_arr = $count_arr[1];
 		
 		// 「s:数字:」で区切って配列にする
-		$serialize_val_arr = preg_split ( '@s:[0-9]+:@', $sql_new );
+		$serialize_val_arr = preg_split ( '@s:[0-9]+:@', $sql_org );
 		array_shift ( $serialize_val_arr );
 		
 		$i = 0;
@@ -38,18 +38,21 @@ if ( $sql && $search_word && $replace_word ) {
 				$quotation2 = $result1[4];
 				
 				// 文字列を検索
-				if ( preg_match_all ( '@' . $replace_word . '@', $serialize_val, $result2 ) ) {
+				if ( preg_match_all ( '@' . $search_word . '@', $serialize_val, $result2 ) ) {
 					// もとの文字数
 					$len_org = (int) $count_arr[$i];
 					
+					// 置換後
+					$serialize_val_new = str_replace ( $search_word, $replace_word, $serialize_val );
+					
 					// 増加後の文字数
-					$len_new = strlen ( $serialize_val );
+					$len_new = strlen ( $serialize_val_new );
 					
 					// 検索
-					$serialize_org =  's:' . $len_org . ':' . $quotation1 . $serialize_val . $quotation2;
+					$serialize_org =  's:' . $len_org . ':' . $quotation1 . $serialize_val_new . $quotation2;
 					
 					// 置換
-					$serialize_replace =  's:' . $len_new . ':' . $quotation1 . $serialize_val . $quotation2;
+					$serialize_replace =  's:' . $len_new . ':' . $quotation1 . $serialize_val_new . $quotation2;
 					
 					// 置き換える
 					$sql_new =  str_replace ( $serialize_org, $serialize_replace, $sql_new );
@@ -64,7 +67,6 @@ if ( $sql && $search_word && $replace_word ) {
 		$log .= number_format ( $count ) . '</div><ul class="log--items">' . $_log . '</ul>';
 	}
 }
-
 $json = json_encode ( array ( 'sql' => $sql_new, 'log' => $log ) );
 header ( 'Content-Type: application/json; charset=utf-8' );
 echo $json;
